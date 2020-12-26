@@ -53,12 +53,11 @@ func GetRow(query string) ([]interface{}, int) {
 		return r, -1
 	}
 
-	rawResult := make([]interface{}, len(columns))
 	result := make([]interface{}, len(columns))
 
 	dest := make([]interface{}, len(columns))
-	for i, _ := range rawResult {
-		dest[i] = &rawResult[i]
+	for i, _ := range columns {
+		dest[i] = &columns[i]
 	}
 	for rows.Next() {
 		err := rows.Scan(dest...)
@@ -66,12 +65,8 @@ func GetRow(query string) ([]interface{}, int) {
 			log.Fatal(err)
 		}
 
-		for i, raw := range rawResult {
-			if raw == nil {
-				result[i] = nil
-			} else {
-				result[i] = raw
-			}
+		for i, raw := range columns {
+			result[i] = raw
 		}
 	}
 
@@ -98,12 +93,11 @@ func GetRows(query string) ([]map[string]interface{}, int) {
 		return hsMap, -1
 	}
 
-	rawResult := make([]interface{}, len(columns))
 	array := make(map[string]interface{})
 
 	dest := make([]interface{}, len(columns))
-	for i, _ := range rawResult {
-		dest[i] = &rawResult[i]
+	for i, _ := range columns {
+		dest[i] = &columns[i]
 	}
 	for rows.Next() {
 		err := rows.Scan(dest...)
@@ -111,12 +105,8 @@ func GetRows(query string) ([]map[string]interface{}, int) {
 			log.Panic(err)
 		}
 
-		for i, raw := range rawResult {
-			if raw == nil {
-				array[columns[i]] = nil
-			} else {
-				array[columns[i]] = raw
-			}
+		for i, raw := range columns {
+			array[columns[i]] = raw
 		}
 
 		hsMap = append(hsMap, array)
