@@ -73,11 +73,11 @@ func GetRow(query string) ([]interface{}, int) {
 	return result, 1
 }
 
-func GetRows(query string) ([]map[string]interface{}, int) {
+func GetRows(query string) ([]interface{}, int) {
 	db := connect()
 	defer db.Close()
 
-	hsMap := make([]map[string]interface{}, 0, 0)
+	hsMap := make([]interface{}, 0, 0)
 
 	rows, err := db.Query(query)
 
@@ -93,20 +93,20 @@ func GetRows(query string) ([]map[string]interface{}, int) {
 		return hsMap, -1
 	}
 
-	array := make(map[string]interface{})
-
 	dest := make([]interface{}, len(columns))
 	for i, _ := range columns {
 		dest[i] = &columns[i]
 	}
+
 	for rows.Next() {
 		err := rows.Scan(dest...)
 		if err != nil {
 			log.Panic(err)
 		}
 
+		array := make([]interface{}, len(columns))
 		for i, raw := range columns {
-			array[columns[i]] = raw
+			array[i] = raw
 		}
 
 		hsMap = append(hsMap, array)
